@@ -34,7 +34,7 @@ class ContactFormMail extends Mailable
             'name_type' => gettype($this->name),
             'email_type' => gettype($this->email),
             'message_type' => gettype($this->descrition),
-        ]);
+        ]); jhjhjhj
     }
 
     /**
