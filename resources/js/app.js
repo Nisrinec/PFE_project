@@ -1,12 +1,14 @@
-// resources/js/app.js
+import Editor from '@toast-ui/editor'
+import '@toast-ui/editor/dist/toastui-editor.css';
 
-import Vue from 'vue'; // Import Vue from Vue 2
-import HeaderComponent from './components/HeaderComponent.vue'; // Import your HeaderComponent
-
-// Register your components globally
-Vue.component('header-component', HeaderComponent);
-
-// Create a new Vue instance and mount it to the #app element
-new Vue({
-    el: '#app',
+const editor = new Editor({
+  el: document.querySelector('#editor'),
+  height: '400px',
+  initialEditType: 'markdown',
+  placeholder: 'Write something cool!',
+})
+document.querySelector('#contactus').addEventListener('submit', e => {
+  e.preventDefault();
+  document.querySelector('#description').value = editor.getMarkdown();
+  e.target.submit();
 });

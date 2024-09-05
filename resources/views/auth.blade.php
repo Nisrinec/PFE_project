@@ -1,10 +1,10 @@
+
 @extends('layouts.app')
 
 @section('content')
     <div id="app">
-        <header-component></header-component>
         <div class="section">
-            <div class="container">
+            <div class="containe">
                 <div class="row full-height justify-content-center">
                     <div class="col-12 text-center align-self-center py-5">
                         <div class="section pb-5 pt-5 pt-sm-2 text-center">
@@ -27,13 +27,13 @@
                                                 <form method="POST" action="{{ route('login.submit') }}">
                                                     @csrf
                                                     <div class="form-group">
-                                                        <input type="email" id="email" name="email"
-                                                            class="form-style" placeholder="Email"
+                                                        <input type="email" name="email"
+                                                            class="form-style" placeholder="Email" 
                                                             value="{{ old('email') }}" required>
                                                         <i class="input-icon uil uil-at"></i>
                                                     </div>
                                                     <div class="form-group mt-2">
-                                                        <input type="password" id="password" name="password"
+                                                        <input type="password" name="password"
                                                             class="form-style" placeholder="Password" required>
                                                         <i class="input-icon uil uil-lock-alt"></i>
                                                     </div>
@@ -58,27 +58,32 @@
                                                 <form method="POST" action="{{ route('register.submit') }}">
                                                     @csrf
                                                     <div class="form-group">
-                                                        <input type="text" name="name" class="form-style"
-                                                            id="name" placeholder="Full Name" required>
+                                                        <input type="text" name="name" class="form-style" placeholder="Full Name" required>
                                                         <i class="input-icon uil uil-user"></i>
                                                     </div>
                                                     <div class="form-group mt-2">
-                                                        <input type="tel" name="phone" class="form-style"
-                                                            id="phone" placeholder="Phone Number" required>
+                                                        <input type="tel" name="phone" class="form-style" placeholder="Phone Number" required>
                                                         <i class="input-icon uil uil-phone"></i>
                                                     </div>
                                                     <div class="form-group mt-2">
-                                                        <input type="email" name="email" class="form-style"
-                                                            id="email" placeholder="Email" required>
+                                                        <select name="role_id" class="form-style">
+                                                            <option value="" disabled selected>Select Role</option>
+                                                            <option value="1">User</option>
+                                                            <option value="2">Writer</option>
+                                                        </select>
+                                                        <i class="input-icon uil uil-lock-alt"></i>
+                                                    </div>
+                                                    <div class="form-group mt-2">
+                                                        <input type="email" name="email" class="form-style" placeholder="Email" required>
                                                         <i class="input-icon uil uil-at"></i>
                                                     </div>
                                                     <div class="form-group mt-2">
-                                                        <input type="password" name="password" class="form-style"
-                                                            id="password" placeholder="Password" required>
+                                                        <input type="password" name="password" class="form-style" placeholder="Password" required>
                                                         <i class="input-icon uil uil-lock-alt"></i>
                                                     </div>
                                                     <button type="submit" class="btn mt-4">Register</button>
                                                 </form>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -90,9 +95,11 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('styles')
+    <footer>
+        @include('footer')
+    </footer>
+    @section('styles')
+    @endsection
     <style>
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
 
@@ -132,7 +139,7 @@
 
         .section {
             position: relative;
-            width: 100%;
+            width: 99%;
             display: block;
         }
 

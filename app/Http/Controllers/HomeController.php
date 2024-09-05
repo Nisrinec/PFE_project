@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\PostController;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('home'); // Ensure this view file exists (resources/views/home.blade.php)
-    }
+        $posts = Post::all();
+        return view('home', compact('posts'));
+    
+}
 }

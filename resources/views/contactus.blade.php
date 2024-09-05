@@ -2,7 +2,6 @@
 
 @section('content')
 <div id="app">
-    <header-component></header-component>
     <section id="contact">
         <h1 class="section-header">Contact Us</h1>
         <div class="contact-wrapper">
@@ -39,24 +38,30 @@
                     <li class="list-item"><i class="fa fa-map-marker fa-2x"><span class="contact-text place">Email:hitmeup@gmail.com</a></span></i></li>
                 </ul>
                 <hr>
-              
-        </div>
+            </div>
     </section>
 </div>
+<footer>
+    @include('footer')
+</footer>
 @endsection
 
 @section('styles')
 <style>
+    html, body {
+    height: 100%;
+    margin: 0;
+}
     /* Include the CSS provided here */
-    body {
-        margin: 0;
-        padding: 0;
+    body { 
         background-color: #B5B5B5;
-        padding-bottom: 100px;
+        display: flex;
+    flex-direction: column;
     }
 
     #app {
         background-color: transparent; /* Ensure the header is visible */
+        flex: 1;
     }
 
     header-component {

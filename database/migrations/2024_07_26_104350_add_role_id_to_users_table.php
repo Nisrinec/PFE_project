@@ -4,21 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldsToUsersTable extends Migration
+class AddRoleIdToUsersTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            // Add your fields here, e.g.,
-            // $table->string('new_column')->nullable();
+            $table->string('role_id')->nullable()->after('phone'); 
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            // Drop your fields here, e.g.,
-            // $table->dropColumn('new_column');
+            $table->dropColumn('role_id');
         });
     }
 }
