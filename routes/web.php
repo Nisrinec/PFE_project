@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactusController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ContactFormMail;
 use App\Http\Controllers\EmailTestController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,29 +24,33 @@ Route::get('/', function () {
 });
 
 // Route to show the contact form
-// Route to show the contact form
 Route::get('/contactus', [ContactusController::class, 'show'])->name('contactus.show');
 
 // Route to handle contact form submission
 Route::post('/contactus', [ContactusController::class, 'store'])->name('contactus.store');
 
-// Route to handle all other routes and serve your main app view
-
+// Route to test email functionality 
 Route::get('/test-email', [EmailTestController::class, 'sendTestEmail']);
 
-
-Route::get('/{any}', function () {
-    return view('layouts.app');  // Use 'layouts.app' for views in the 'layouts' directory
-})->where('any', '.*');
-
-
 // Authentication routes
-Auth::routes();
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register.form');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Route for authenticated users' home
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Protected routes for authenticated users
 Route::middleware('auth')->group(function () {
     // Add protected routes here
+    // Example: Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
+// Catch-all route for other pages
+Route::get('/{any}', function () {
+    return view('layouts.app');  // Use 'layouts.app' for views in the 'layouts' directory
+})->where('any', '.*');
