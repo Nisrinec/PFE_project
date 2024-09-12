@@ -207,8 +207,7 @@ ul {
               @if($post->image)
                   <img src="{{ asset('storage/' . $post->image) }}" alt="Post image">
               @endif
-              <h3>{{ $post->title }}</h3>
-              <p>{{ $post->description }}</p>
+              <h3>{{ \Illuminate\Support\Str::limit($post->title, 40, '...') }}</h3>
               <a href="{{ route('posts.show', $post->id) }}">View Article <i class="fas fa-chevron-right"></i></a>
           </div>
       @endforeach

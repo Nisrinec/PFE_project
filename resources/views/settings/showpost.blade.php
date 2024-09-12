@@ -134,10 +134,9 @@
         /* Three-dots menu styling */
         .menu {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-        }
+    bottom: 20px;
+    right: 10px;
+}
 
         .menu .dots {
             width: 30px;
@@ -217,7 +216,7 @@
                                     </form>
                                 </div>
                             </div>
-                            <h3>{{ $post->title }}</h3>
+                            <h3>{{ \Illuminate\Support\Str::limit($post->title, 40, '...') }}</h3>
                             <div class="price">{{ $post->created_at->format('F j, Y') }}</div>
                             <a href="{{ route('posts.show', $post->id) }}" class="card_button">View Article</a>
                         </figcaption>

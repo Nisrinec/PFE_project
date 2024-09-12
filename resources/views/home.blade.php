@@ -23,7 +23,7 @@
                                 @endif
                             </div>
                             <div class="card_data">
-                                <h5 class="card_name">{{ $post->title }}</h5>
+                                <h5 class="card_name">{{ \Illuminate\Support\Str::limit($post->title, 40, '...') }}</h5>
                                 <br>
                                 <a href="{{ route('posts.show', $post->id) }}" class="card_button">View Article</a>
                             </div>
@@ -53,7 +53,7 @@
                             <div class="thumb" style="background-image: url('{{ asset('storage/' . $post->image) }}');"></div>
                         @endif
                         <article>
-                            <h1>{{ $post->title }}</h1>
+                            <h1>{{ \Illuminate\Support\Str::limit($post->title, 40, '...') }}</h1>
                             <span>{{ $post->author }}</span>
                         </article>
                     </a>
@@ -67,11 +67,13 @@
                 <br>
                 <h1>In Case You Missed It</h1>
                 <br>
+                <br>
                 @if(isset($highlightedPost))
                     <a href="{{ route('posts.show', $highlightedPost->id) }}">
                         <div class="highlight_img" style="background-image: url('{{ asset('storage/' . $highlightedPost->image) }}');"></div>
                         <div class="highlight_content">
-                            <h2>{{ $highlightedPost->title }}</h2>
+                            <h2>{{ \Illuminate\Support\Str::limit($highlightedPost->title, 60, '...') }}</h2>
+
                         </div>
                     </a>
                 @endif
@@ -83,7 +85,7 @@
                 <br>
                 <ul>
                     @foreach($trendingPosts->slice(0, 12) as $post )
-                        <li><a href="{{ route('posts.show', $post->id) }}">{{ $post->title }}</a></li>
+                        <li><a href="{{ route('posts.show', $post->id) }}">{{ \Illuminate\Support\Str::limit($post->title, 90, '...') }}</a></li>
                     @endforeach
                 </ul>
             </div>
@@ -324,6 +326,7 @@
     .latest_posts {
         flex: 1;
         max-width: 40%;
+        margin-right: 4cm;
     }
 
     .latest_posts h3 {

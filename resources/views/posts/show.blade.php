@@ -76,19 +76,22 @@
         .btn-group {
             margin-top: 20px;
         }
-
+        
         .sidebar-title {
             font-size: 1.5rem;
             margin-bottom: 15px;
+            margin-left: 1cm;
             color: #ff0000;
         }
-
+        
         .sidebar-post {
             margin-bottom: 20px;
+            margin-left: 1cm;
+            margin-right: 0cm;
         }
 
         .sidebar-post img {
-            width: 100%;
+            width: 150%;
             border-radius: 8px;
             margin-bottom: 10px;
         }
@@ -391,7 +394,7 @@
                     <div class="post-item">
                         <img src="{{ $otherPost->image ? asset('storage/' . $otherPost->image) : '' }}"
                             alt="{{ $otherPost->title }}">
-                        <h5><a href="{{ route('posts.show', $otherPost->id) }}">{{ $otherPost->title }}</a></h5>
+                        <h5><a href="{{ route('posts.show', $otherPost->id) }}">{{ \Illuminate\Support\Str::limit($otherPost->title, 40, '...') }}</a></h5>
                     </div>
                 @endforeach
             </div>
