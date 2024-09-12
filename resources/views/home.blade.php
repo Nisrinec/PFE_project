@@ -4,15 +4,18 @@
 
 @section('content')
 <div id="app">
-    <h1>Trending</h1>
-    @if($posts->isEmpty())
+    <div class="trending">
+        <br>
+        <h1>Trending</h1>
+    </div>
+    @if($trendingPosts->isEmpty())
         <p>No posts available.</p>
     @else
         <div class="hero_section">
             <div class="cards_box swiper">
                 <div class="swiper-wrapper">
                     <!-- Card details -->
-                    @foreach($posts as $post)
+                    @foreach($trendingPosts as $post)
                         <section class="card_details swiper-slide">
                             <div class="card_img_box">
                                 @if($post->image)
@@ -21,7 +24,7 @@
                             </div>
                             <div class="card_data">
                                 <h5 class="card_name">{{ $post->title }}</h5>
-                                <p class="card_description">{{ $post->description }}</p>
+                                <br>
                                 <a href="{{ route('posts.show', $post->id) }}" class="card_button">View Article</a>
                             </div>
                         </section>
@@ -64,15 +67,13 @@
                 <br>
                 <h1>In Case You Missed It</h1>
                 <br>
-                <!-- Assuming you want the first post to be highlighted -->
-                @if($posts->isNotEmpty())
-                    @php $highlightedPost = $posts->first(); @endphp
-                    <!-- Wrapping the highlight content in a link -->
+                @if(isset($highlightedPost))
                     <a href="{{ route('posts.show', $highlightedPost->id) }}">
                         <div class="highlight_img" style="background-image: url('{{ asset('storage/' . $highlightedPost->image) }}');"></div>
                         <div class="highlight_content">
                             <h2>{{ $highlightedPost->title }}</h2>
-                    </div>
+                        </div>
+                    </a>
                 @endif
             </div>
             <div class="latest_posts">
@@ -81,7 +82,7 @@
                 <br>
                 <br>
                 <ul>
-                    @foreach($posts->slice(0, 12) as $post)
+                    @foreach($trendingPosts->slice(0, 12) as $post )
                         <li><a href="{{ route('posts.show', $post->id) }}">{{ $post->title }}</a></li>
                     @endforeach
                 </ul>
@@ -113,7 +114,11 @@
         margin-top: 1cm;
         text-align: center; /* Adjust the margin for the "Cool Articles" title */
     }
-
+.trending h1{
+    display: flex;
+    justify-content: center;  /* Centers horizontally */
+    align-items: center;      /* Centers vertically */
+}
     .cards_box {
         position: relative;
         width: 100%;

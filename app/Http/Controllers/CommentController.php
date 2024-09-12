@@ -79,32 +79,154 @@ class CommentController extends Controller
 //     return redirect()->back()->with('success', 'Comment added successfully!');
 // }
 
+// public function store(Request $request, $postId)
+// {
+//     $user = auth()->user();
+//     if (!$user) {
+//         return redirect()->route('login')->withErrors('You need to be logged in to comment.');
+//     }
+
+//     // Validate the request input
+//     $validatedData = $request->validate([
+//         'content' => 'required|string',
+//         'parent_id' => 'nullable|exists:comments,id', // Ensure parent_id exists in comments
+//     ]);
+
+//     $post = Post::find($postId);
+//     if (!$post) {
+//         return redirect()->back()->withErrors('Post not found.');
+//     }
+
+//     // Create and save the comment
+//     $comment = new Comment();
+//     $comment->content = $validatedData['content'];
+//     $comment->user_id = $user->id;
+//     $comment->post_id = $postId;
+
+//     if ($request->has('parent_id')) {
+//         $parentComment = Comment::find($request->parent_id);
+//         if (!$parentComment) {
+//             return redirect()->back()->withErrors('Parent comment not found.');
+//         }
+
+//         $comment->parent_id = $request->parent_id;
+
+//         // Notify the owner of the parent comment (reply notification)
+//         if ($parentComment->user_id !== $user->id) {
+//             ReplyNotification::create([
+//                 'user_id' => $parentComment->user_id,
+//                 'comment_id' => $comment->parent_id,
+//                 'post_id' => $postId,
+//                 'content' => "{$user->name} replied to your comment: \"{$comment->content}\"",
+//             ]);
+//         }
+//     }
+
+//     $comment->save();
+
+//     // Notify the post owner about the new comment (if it's not the post owner themselves)
+//     $postOwner = $post->user;
+//      // Notify the post owner, but only if the commenter is not the post owner
+//     if ($user->id !== $post->user_id) {
+//         $postOwner = $post->user; // Assuming `user` is the relationship for the post's author
+//         $postOwner->notify(new NewCommentNotification($comment->content, $postId, $user->name));
+//     }
+
+//     // Redirect or return success message
+//     return redirect()->back()->with('success', 'Comment added successfully!');
+// }
+
+// public function store(Request $request, $postId)
+// {
+//     // Validate the request input
+//     $validatedData = $request->validate([
+//         'content' => 'required|string',
+//     ]);
+    
+//     // Retrieve the post and user
+//     $post = Post::findOrFail($postId);
+//     $user = auth()->user();
+
+//     // Create and save the comment or reply
+//     $comment = new Comment();
+//     $comment->content = $validatedData['content'];
+//     $comment->user_id = $user->id;
+//     $comment->parent_id = $request->parent_id; 
+//     $comment->post_id = $postId;
+
+//     // Check if it's a reply (parent_id is present)
+//     if ($request->has('parent_id')) {
+//         $comment->parent_id = $request->parent_id;
+
+//         // Notify the owner of the parent comment (reply notification)
+//         $parentComment = Comment::findOrFail($request->parent_id);
+//         if ($parentComment->user_id !== $user->id) {
+//             $replyNotification = ReplyNotification::create([
+//                 'user_id' => $parentComment->user_id,
+//                 'comment_id' => $comment->parent_id,
+//                 'post_id' => $postId,
+//                 'content' => "{$user->name} replied to your comment: \"{$comment->content}\"",
+//             ]);
+
+//             // Debugging
+//             \Log::info('Reply Notification Created:', $replyNotification->toArray());
+//         }
+//     }
+
+//     $comment->save();
+
+//     // Notify the post owner about the new comment (if it's not the post owner themselves)
+//     $postOwner = $post->user;
+//     if ($postOwner->id !== $user->id) {
+//         $postNotification = ReplyNotification::create([
+//             'user_id' => $postOwner->id,
+//             'comment_id' => $comment->id,
+//             'post_id' => $postId,
+//             'content' => "{$user->name} commented on your post: \"{$comment->content}\"",
+//         ]);
+
+//         // Debugging
+//         \Log::info('Post Notification Created:', $postNotification->toArray());
+//     }
+
+//     // Redirect or return success message
+//     return redirect()->back()->with('success', 'Comment added successfully!');
+// }
+
 public function store(Request $request, $postId)
 {
+    $user = auth()->user();
+    if (!$user) {
+        return redirect()->route('login')->withErrors('You need to be logged in to comment.');
+    }
+
     // Validate the request input
     $validatedData = $request->validate([
         'content' => 'required|string',
+        'parent_id' => 'nullable|exists:comments,id', // Ensure parent_id exists in comments
     ]);
 
-    // Retrieve the post and user
-    $post = Post::findOrFail($postId);
-    $user = auth()->user();
+    $post = Post::find($postId);
+    if (!$post) {
+        return redirect()->back()->withErrors('Post not found.');
+    }
 
-    // Create and save the comment or reply
+    // Create and save the comment
     $comment = new Comment();
     $comment->content = $validatedData['content'];
     $comment->user_id = $user->id;
-    $comment->parent_id = $request->parent_id; 
     $comment->post_id = $postId;
 
-    // Check if it's a reply (parent_id is present)
     if ($request->has('parent_id')) {
+        $parentComment = Comment::find($request->parent_id);
+        if (!$parentComment) {
+            return redirect()->back()->withErrors('Parent comment not found.');
+        }
+
         $comment->parent_id = $request->parent_id;
 
         // Notify the owner of the parent comment (reply notification)
-        $parentComment = Comment::findOrFail($request->parent_id);
         if ($parentComment->user_id !== $user->id) {
-            // Only send notification if the user is not replying to their own comment
             ReplyNotification::create([
                 'user_id' => $parentComment->user_id,
                 'comment_id' => $comment->parent_id,
@@ -118,21 +240,15 @@ public function store(Request $request, $postId)
 
     // Notify the post owner about the new comment (if it's not the post owner themselves)
     $postOwner = $post->user;
-    if ($postOwner->id !== $user->id) {
-        ReplyNotification::create([
-            'user_id' => $postOwner->id,
-            'comment_id' => $comment->id,
-            'post_id' => $postId,
-            'content' => "{$user->name} commented on your post: \"{$comment->content}\"",
-        ]);
+     // Notify the post owner, but only if the commenter is not the post owner
+    if ($user->id !== $post->user_id) {
+        $postOwner = $post->user; // Assuming user is the relationship for the post's author
+        $postOwner->notify(new NewCommentNotification($comment->content, $postId, $user->name));
     }
 
     // Redirect or return success message
     return redirect()->back()->with('success', 'Comment added successfully!');
 }
-
-
-    
 
     // Show all comments for the authenticated user
     public function index()
@@ -209,12 +325,28 @@ public function store(Request $request, $postId)
     public function showe()
     {
         $user = auth()->user();
-        $notifications = ReplyNotification::where('user_id', $user->id)
-                                           ->orderBy('created_at', 'desc')
-                                           ->get();
+    
+        if (!$user) {
+            return redirect('/login')->with('error', 'You need to be logged in to view notifications.');
+        }
+    
+        // Debugging: Check user ID
+        \Log::info('Authenticated User ID:', ['user_id' => $user->id]);
+    
+        $replyNotifications = ReplyNotification::where('user_id', $user->id)
+                                               ->orderBy('created_at', 'desc')
+                                               ->get();
+    
+        // Debugging: Check notifications retrieved
+        \Log::info('Reply Notifications:', $replyNotifications->toArray());
+    
+        return view('settings.reply', compact('replyNotifications'));
+    }
+    
+    
 
-return view('settings.reply', compact('notifications'));
-}
+    
+
     public function editt($id)
     {
         $comment = Comment::find($id);

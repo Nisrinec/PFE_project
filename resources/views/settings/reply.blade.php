@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Comment Notification</title>
+    <title>Reply Notifications</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,7 +40,7 @@
             font-size: 14px;
             color: #888;
             text-align: right;
-        }     
+        }
         .wrapper {
             display: flex;
         }
@@ -51,28 +51,26 @@
             width: 100%;
             background-color: #f8f9fa;
             border-bottom: 1px solid #ddd;
-            z-index: 1000; /* Ensure it stays on top */
-            height: 60px; /* Adjust as needed */
+            z-index: 1000;
+            height: 60px;
         }
         .sidebar { 
             background-color: #f8f9fa; 
             padding: 20px; 
             border-right: 1px solid #ddd; 
-            height: calc(100vh - 60px); /* Full height minus header height */
-            overflow-y: auto; /* Adds scroll if content overflows */
+            height: calc(100vh - 60px); 
+            overflow-y: auto; 
             position: fixed;
-            top: 190px; /* Start after the header */
+            top: 60px;
             left: 0;
-            width: 250px; /* Adjust width as needed */
-            z-index: 999; /* Ensure it is below the header but above the content */
+            width: 250px; 
+            z-index: 999; 
         }
-        
         .sidebar h5 { 
             font-size: 1.25rem; 
             font-weight: 700; 
             margin-bottom: 20px; 
         }
-        
         .sidebar a { 
             display: block; 
             padding: 10px 15px; 
@@ -80,6 +78,14 @@
             color: #333; 
             border-radius: 4px; 
             margin-bottom: 10px; 
+        }
+        .sidebar a:hover { 
+            background-color: #e9ecef; 
+            color: #ff0000; 
+        }
+        .sidebar a.active { 
+            background-color: #ff0000; 
+            color: #ffffff; 
         }
         .side a { 
         display: block; 
@@ -89,21 +95,6 @@
         border-radius: 4px; 
         margin-bottom: 10px; 
     }
-    
-        .sidebar a:hover { 
-            background-color: #e9ecef; 
-            color: #ff0000; 
-        }
-        
-        .sidebar a.active { 
-            background-color: #ff0000; 
-            color: #ffffff; 
-        }
-        
-        .sidebar .list-group-item { 
-            border: none; 
-            border-radius: 0; 
-        }
     </style>
 </head>
 <header class="header">
@@ -111,34 +102,37 @@
 </header>
 <body>
     <div class="sidebar">
+        <br>
+        <br><br><br><br>
         <h5>Settings</h5>
         <div class="side">
-        {{-- <a href="#">Notifications</a> --}}
-        <a href="{{ url('/settings/reply') }}">Notifications</a>
+            <a href="{{ url('/settings/reply') }}">Notifications</a>
+        </div>
         <a href="{{ route('likedposts.likedPosts') }}">Liked Posts</a>
-    </div>
         <a href="{{ url('/showcomment') }}">Your Comments</a>
     </div>
-    
-<br>
+            <br><br>
 <br><br>
 <br><br>
 <br><br>
 <br><br>
-<br><br>
-<div class="notification-container">
-    <div class="notification-header">Reply Notifications</div>
-    @forelse ($notifications as $notification)
-        <div class="notification-content">
-            <p>{{ $notification->content }}</p>
-            <p><small>{{ \Carbon\Carbon::parse($notification->created_at)->format('d/m/Y H:i') }}</small></p>
+            @forelse ($replyNotifications as $notification)
+                <div class="notification-container">
+                    <div class="notification-header">
+                    <p>{{ $notification->content }}</p>
+                    <div class="notification-content">
+                        <p><a href="{{ url('/posts/' . ($notification->post_id ?? '#') . '#comment-' . ($notification->comment_id ?? '')) }}">View reply</a></p>
+                    </div>
+                    <div class="notification-footer">
+                    <p><small>{{ \Carbon\Carbon::parse($notification->created_at)->format('F j, Y \a\t g:i A') }}</small></p>
+                </div>
+                </div>
+               
+            </div>
+            @empty
+                <p>No notifications at this time.</p>
+            @endforelse
         </div>
-        <hr>
-    @empty
-        <p>No notifications at this time.</p>
-    @endforelse
-</div>
-</body>
-</html>
+    </div>
 </body>
 </html>

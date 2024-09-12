@@ -1,314 +1,241 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('content')
-<div id="app">
-    <section id="contact">
-        <h1 class="section-header">Contact Us</h1>
-        <div class="contact-wrapper">
-            <!-- Left contact page -->
-            <form id="contact-form" class="form-horizontal" role="form" method="POST" action="{{ route('contactus.store') }}">
-                @csrf
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" id="name" placeholder="NAME" name="name" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <input type="email" class="form-control" id="email" placeholder="EMAIL" name="email" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <textarea class="form-control" rows="10" placeholder="MESSAGE" name="message" required></textarea>
-                    </div>
-                </div>
-                <button class="btn btn-primary send-button" id="submit" type="submit" value="SEND">
-                    <div class="alt-send-button">
-                        <i class="fa fa-paper-plane"></i><span class="send-text">SEND</span>
-                    </div>
-                </button>
-            </form>
-            <!-- Left contact page -->
-
-            <div class="direct-contact-container">
-                <ul class="contact-list">
-                    <li class="list-item"><i class="fa fa-map-marker fa-2x"><span class="contact-text place">Location:Tangier, State</span></i></li>
-                    <li class="list-item"><i class="fa fa-map-marker fa-2x"><span class="contact-text place">Phone:+212 678456544</a></span></i></li>
-                    <li class="list-item"><i class="fa fa-map-marker fa-2x"><span class="contact-text place">Email:hitmeup@gmail.com</a></span></i></li>
-                </ul>
-                <hr>
-            </div>
-    </section>
-</div>
-<footer>
-    @include('footer')
-</footer>
-@endsection
-
-@section('styles')
-<style>
-    html, body {
-    height: 100%;
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Internship Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+       body {
+    font-family: Arial;
+    background-color: #a8a4a4;
     margin: 0;
-}
-    /* Include the CSS provided here */
-    body { 
-        background-color: #B5B5B5;
-        display: flex;
+    padding: 0;
+    display: flex;
     flex-direction: column;
-    }
+    min-height: 100vh; /* Ensures body takes full viewport height */
+}
 
-    #app {
-        background-color: transparent; /* Ensure the header is visible */
-        flex: 1;
-    }
 
-    header-component {
-        display: block;
-        background-color: #fff; /* Adjust as needed */
-        z-index: 10; /* Ensure the header is on top */
-        width: 100%;
-        position: fixed; /* Ensure the header is fixed at the top */
-        top: 0;
-    }
 
-    #contact {
-        width: 100%;
-        height: 100%;
-        padding-top: 100px; /* Adjust padding to avoid overlap with fixed header */
-    }
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px; /* Adjust based on header height and desired space */
+    padding-bottom: 80px; /* Adjust based on footer height and desired space */
+}
 
-    .section-header {
-        text-align: center;
-        margin: 0 auto;
-        padding: 40px 0;
-        font: 300 60px 'Oswald', sans-serif;
-        color: #fff;
-        text-transform: uppercase;
-        letter-spacing: 6px;
-    }
+.footer {
+    background-color: #303030; /* Or your desired color */
+    color: #ffffff; /* Text color */
+    padding: 20px; /* Adjust as needed */
+    box-sizing: border-box;
+    /* Optional: Add space at the top if needed */
+}
 
-    .contact-wrapper {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin: 0 auto;
-        padding: 20px;
-        position: relative;
-        max-width: 840px;
-    }
+.container {
+    border-radius: 16px;
+    max-width: 1180px;
+    margin: 0 30px;
+    background-color: white;
+    padding: 20px; /* Ensure padding if needed */
+    flex: 1;
+}
 
-    .form-horizontal {
-        max-width: 400px;
-        font-family: 'Lato';
-        font-weight: 400;
-    }
+/* Your other styles remain unchanged */
+.inner-container {
+    width: 800px;
+    margin: 0 auto;
+    display: flex;
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+}
 
-    .form-control, 
-    textarea {
-        max-width: 400px;
-        background-color: #B5B5B5;
-        color: #fff;
-        letter-spacing: 1px;
-    }
+/* Add space between header and content, and between content and footer */
+.content-wrapper {
+    padding-top: 50px; /* Adjust this value to control the space below the header */
+    padding-bottom: 80px; /* Adjust this value to control the space above the footer */
+}
 
-    .send-button {
-        background-color:#ff0000;
-        margin-top: 15px;
-        height: 34px;
-        width: 400px;
-        overflow: hidden;
-        transition: all .2s ease-in-out;
-    }
 
-    .alt-send-button {
-        width: 400px;
-        height: 34px;
-        transition: all .2s ease-in-out;
-    }
-
-    .send-text {
-        display: block;
-        margin-top: 10px;
-        font: 700 12px 'Lato', sans-serif;
-        letter-spacing: 2px;
-    }
-
-    .alt-send-button:hover {
-        transform: translate3d(0px, -29px, 0px);
-    }
-
-    .direct-contact-container {
-        max-width: 400px;
-    }
-
-    .contact-list {
-        list-style-type: none;
-        margin-left: -30px;
-        padding-right: 20px;
-    }
-
-    .list-item {
-        line-height: 4;
-        color: #aaa;
-    }
-
-    .contact-text {
-        font: 300 18px 'Lato', sans-serif;
-        letter-spacing: 1.9px;
-        color: #bbb;
-    }
-
-    .place {
-        margin-left: 62px;
-        color: #000;
-    }
-
-    .phone {
-        margin-left: 56px;
-        color: #000;
-    }
-
-    .gmail {
-        margin-left: 53px;
-        color: #000;
-    }
-
-    .contact-text a {
-        color: #bbb;
-        text-decoration: none;
-        transition-duration: 0.2s;
-    }
-
-    .contact-text a:hover {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    .social-media-list {
-        position: relative;
-        font-size: 22px;
-        text-align: center;
-        width: 100%;
-        margin: 0 auto;
-        padding: 0;
-    }
-
-    .social-media-list li a {
-        color: #fff;
-    }
-
-    .social-media-list li {
-        position: relative; 
-        display: inline-block;
-        height: 60px;
-        width: 60px;
-        margin: 10px 3px;
-        line-height: 60px;
-        border-radius: 50%;
-        color: #fff;
-        background-color: rgb(27,27,27);
-        cursor: pointer; 
-        transition: all .2s ease-in-out;
-    }
-
-    .social-media-list li:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 60px;
-        height: 60px;
-        line-height: 60px;
-        border-radius: 50%;
-        opacity: 0;
-        box-shadow: 0 0 0 1px #fff;
-        transition: all .2s ease-in-out;
-    }
-
-    .social-media-list li:hover {
-        background-color: #fff; 
-    }
-
-    .social-media-list li:hover:after {
-        opacity: 1;  
-        transform: scale(1.12);
-        transition-timing-function: cubic-bezier(0.37,0.74,0.15,1.65);
-    }
-
-    .social-media-list li:hover a {
-        color: #000;
-    }
-
-    .copyright {
-        font: 200 14px 'Oswald', sans-serif;
-        color: #555;
-        letter-spacing: 1px;
-        text-align: center;
-    }
-
-    hr {
-        border-color: rgba(255,255,255,.6);
-    }
-
-    @media screen and (max-width: 850px) {
-        .contact-wrapper {
-            display: flex;
-            flex-direction: column;
+        /* Your other styles remain unchanged */
+       
+        .tile1 {
+            width: 350px;
         }
-        .direct-contact-container, .form-horizontal {
-            margin: 0 auto;
-        }  
-        
-        .direct-contact-container {
-            margin-top: 60px;
-            max-width: 300px;
-        }    
-        .social-media-list li {
-            height: 60px;
-            width: 60px;
-            line-height: 60px;
-        }
-        .social-media-list li:after {
-            width: 60px;
-            height: 60px;
-            line-height: 60px;
-        }
-    }
 
-    @media screen and (max-width: 569px) {
-        .direct-contact-container, .form-wrapper {
-            float: none;
-            margin: 0 auto;
-        }   
-        .form-control, 
+        .tile2 {
+            flex: 1 1 auto;
+            padding: 0px 40px;
+            margin-left:2cm;
+        }
+
+        .tile1-heading {
+            background: -webkit-linear-gradient(#ff0000, #444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .form-row {
+            padding: 20px 0px 0px 0px;
+        }
+
+        .form-field {
+            border-radius: 4px;
+            width: 100%;
+            padding: 15px;
+            background-color: #f5f4fa;
+            border: 0px;
+        }
+
+        .contact-image {
+            padding: 10px;
+            border-radius: 35px;
+            border: 1px solid #a8a4a4;
+            vertical-align: middle;
+            margin-right: 20px;
+            width: 16px;
+            height: 16px;
+        }
+
         textarea {
-            max-width: 300px;
-            margin: 0 auto;
-        }   
-        .name, .email, textarea {
-            width: 300px;
+            height: 100px;
+            font-family: Arial;
         }
-        .direct-contact-container {
-            max-width: 300px;
-            margin-top: 20px;
-            padding-right: 5%;   
+
+        .btn {
+            color: white;
+            background: linear-gradient(to right, #444, #ff0000);
         }
-        .social-media-list {
-            left: 0;
+
+        .tile2-image img {
+            width: 200px;
+            height: 200px;
+            margin-left:1cm;
         }
-        .social-media-list li {
-            height: 55px;
-            width: 55px;
-            line-height: 55px;
-            font-size: 2rem;
+
+        #menu-icon {
+            display: none;
+            float: right;
         }
-        .social-media-list li:after {
-            width: 55px;
-            height: 55px;
-            line-height: 55px;
+
+        @media all and (max-width: 900px) {
+            .inner-container {
+                width: auto;
+                display: block;
+                margin: 30px auto;
+            }
+            .header-content {
+                width: auto;
+            }
+            .tile1 {
+                width: 100%;
+            }
+            .tile2 {
+                padding: 0px;
+            }
+            .tile2-image img {
+                width: 100%;
+                height: auto;
+            }
         }
-    }
-</style>
-@endsection
+
+        @media all and (max-width: 540px) {
+            #header-right-menu {
+                float: none;
+                display: none;
+            }
+            #header-right-menu a {
+                display: block;
+                padding: 10px 0px;
+            }
+
+            #menu-icon {
+                display: block;
+                float: right;
+            }
+        }
+
+        @media all and (max-width: 400px) {
+            .container {
+                padding: 10px;
+            }
+        }
+        .form-row p{
+            margin-left:1.5cm;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        @include('header')
+    </header>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="inner-container">
+                <br>
+                <div class="tile1">
+                    <div class="tile1-heading">Get in touch</div>
+                    <div class="form-row">We are here for you! How can we help?</div>
+                    <form id="contact-form" class="form-horizontal" role="form" method="POST" action="{{ route('contactus.store') }}">
+                        @csrf
+                        <div class="form-row">
+                            <input type="text" name="name" class="form-field" placeholder="Enter your name">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" name="email" class="form-field" placeholder="Enter your email address">
+                        </div>
+                        <div class="form-row">
+                            <textarea name="message" class="form-field" placeholder="Go ahead we are listening..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <input type="submit" class="form-field btn" value="Submit">
+                        </div>
+                    </form>
+                </div>
+                <div class="tile2">
+                    <div class="tile2-image">
+                        <img src="images/call2.png">
+                    </div>
+                    <div>
+                        <div class="form-row">
+                            <img src="images/pho.png" class="contact-image"><span>+212 676680985</span>
+                        </div>
+                        <div class="form-row">
+                            <img src="images/mms.jpg" class="contact-image"><span>newstvx2024@gmail.com</span>
+                        </div>
+                        <div class="form-row">
+                            <img src="images/loca.jpg" class="contact-image"><span>Street Jamal Eddine al Afghani </span><p>90000, Tangier</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        @include('footer')
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            var menuElement = document.getElementById("header-right-menu");
+            if (menuElement.style.display === "block") {
+                menuElement.style.display = "none";
+            } else {
+                menuElement.style.display = "block";
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -9,9 +9,18 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function index()
-    {
+    {   
         $posts = Post::all();
-        return view('home', compact('posts'));
+
+    // Fetch trending posts based on likes
+    $trendingPosts = Post::withCount('likes')
+        ->orderBy('likes_count', 'desc')
+        ->take(12)
+        ->get();
+
+        $highlightedPost = $posts->random();
+    // Pass both variables to the view
+     return view('home', compact('posts', 'trendingPosts', 'highlightedPost'));
     
 }
 }

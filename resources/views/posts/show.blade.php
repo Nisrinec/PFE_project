@@ -11,6 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Post Details</title>
     <style>
         body {
@@ -211,10 +213,13 @@
         .reply-form button:hover {
             background-color: #0056b3;
         }
+
         .dropdown-toggle::after {
             display: none;
         }
-         .btn-like, .btn-dislike {
+
+        .btn-like,
+        .btn-dislike {
             border: none;
             background: transparent;
             cursor: pointer;
@@ -230,7 +235,8 @@
             color: #dc3545;
         }
 
-        .btn-like.active, .btn-dislike.active {
+        .btn-like.active,
+        .btn-dislike.active {
             color: #333;
         }
 
@@ -263,10 +269,14 @@
 
                 <!-- Like/Dislike Buttons -->
                 <div class="btn-group">
-                    <button class="btn-like" data-post-id="{{ $post->id }}" aria-label="Like"><i class="fas fa-thumbs-up"></i></button>
-                    <span class="btn-count" id="like-count-{{ $post->id }}">{{ $post->likes_count }}</span>
-                    <button class="btn-dislike" data-post-id="{{ $post->id }}" aria-label="Dislike"><i class="fas fa-thumbs-down"></i></button>
-                    <span class="btn-count" id="dislike-count-{{ $post->id }}">{{ $post->dislikes_count }}</span>
+                    <button class="btn-like" data-post-id="{{ $post->id }}" aria-label="Like"><i
+                            class="fas fa-thumbs-up"></i></button>
+                    <span class="btn-count"
+                        id="like-count-{{ $post->id }}">{{ $post->userInteractions->where('liked', 1)->count() }}</span>
+                    <button class="btn-dislike" data-post-id="{{ $post->id }}" aria-label="Dislike"><i
+                            class="fas fa-thumbs-down"></i></button>
+                    <span class="btn-count"
+                        id="dislike-count-{{ $post->id }}">{{ $post->userInteractions->where('disliked', 1)->count() }}</span>
                 </div>
             </article>
             <!-- Comment Section -->
@@ -274,98 +284,103 @@
                 <p><b>Comments Section</b></p>
                 <div class="comments-list">
                     @foreach ($post->comments as $comment)
-                    <div class="comment border border-1 p-4 rounded-lg" id="comment-{{ $comment->id }}">
-                        <div class="media">
-                            <img class="mr-3 rounded-circle" alt="User Avatar"
-                                src="{{ $comment->user->picture ? asset('storage/public/' . $comment->user->picture) : asset('images/profile-icon.png') }}">
-                            <div class="media-body">
-                                <div class="row ">
-                                    <div class="col-8 d-flex align-items-center">
-                                        <h5 class="mb-0">{{ $comment->user->name }}</h5>
-                                        <span class="comment-date pl-2"> -
-                                            {{ \Carbon\Carbon::parse($comment->created_at)->format('d/m/Y H:i') }}</span>
-                                    </div>
-                                    <div class="col-4 d-flex justify-content-end">
-                                        <!-- Three-Dot Menu for Edit/Delete -->
-                                        <div class="d-flex flex-column">
-                                            @auth
-                                                @if (auth()->id() === $post->user_id || auth()->id() === $comment->user_id)
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-link dropdown-toggle" type="button"
-                                                            id="commentOptions-{{ $comment->id }}"
-                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-h"></i>
-                                                        </button>
-                                                        <div class="dropdown-menu"
-                                                            aria-labelledby="commentOptions-{{ $comment->id }}">
-                                                            @auth
-                                                            @if (auth()->id() === $comment->user_id)
-                                                            <a class="dropdown-item edit-comment-btn" href="#" data-comment-id="{{ $comment->id }}" data-comment-content="{{ $comment->content }}">Edit</a>
-                                                            @endif
-                                                            @endauth
-                                                            <form
-                                                                action="{{ route('comments.destroy', $comment->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="dropdown-item text-danger">Delete</button>
-                                                            </form>
+                        <div class="comment border border-1 p-4 rounded-lg" id="comment-{{ $comment->id }}">
+                            <div class="media">
+                                <img class="mr-3 rounded-circle" alt="User Avatar"
+                                    src="{{ $comment->user->picture ? asset('storage/public/' . $comment->user->picture) : asset('images/profile-icon.png') }}">
+                                <div class="media-body">
+                                    <div class="row ">
+                                        <div class="col-8 d-flex align-items-center">
+                                            <h5 class="mb-0">{{ $comment->user->name }}</h5>
+                                            <span class="comment-date pl-2"> -
+                                                {{ \Carbon\Carbon::parse($comment->created_at)->format('d/m/Y H:i') }}</span>
+                                        </div>
+                                        <div class="col-4 d-flex justify-content-end">
+                                            <!-- Three-Dot Menu for Edit/Delete -->
+                                            <div class="d-flex ">
+                                                @auth
+                                                    @if (auth()->id() === $post->user_id || auth()->id() === $comment->user_id)
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-link dropdown-toggle" type="button"
+                                                                id="commentOptions-{{ $comment->id }}"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-h"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu"
+                                                                aria-labelledby="commentOptions-{{ $comment->id }}">
+                                                                @auth
+                                                                    @if (auth()->id() === $comment->user_id)
+                                                                        <a class="dropdown-item edit-comment-btn" href="#"
+                                                                            data-comment-id="{{ $comment->id }}"
+                                                                            data-comment-content="{{ $comment->content }}">Edit</a>
+                                                                    @endif
+                                                                @endauth
+                                                                <form
+                                                                    action="{{ route('comments.destroy', $comment->id) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="dropdown-item text-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endauth
+                                                @auth
+                                                    <div class="d-flex justify-content-end mb-2">
+                                                        <div class="pull-right reply">
+                                                            <a href="#" class="reply-link"
+                                                                data-comment-id="{{ $comment->id }}"><span><i
+                                                                        class="fa fa-reply"></i> reply</span></a>
                                                         </div>
                                                     </div>
-                                                @endif
-                                            @endauth
+                                                @endauth
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <!-- Comment Content -->
+                                    <p>{{ $comment->content }}</p>
+
+                                    <!-- Reply Link -->
+
+                                    <!-- Nested comments -->
+                                    @include('components/comment', ['comments' => $comment->replies])
+
+                                    <!-- Reply Form -->
+                                    @auth
+                                        <div class="reply-form">
+                                            <form action="{{ route('comments.store', $post) }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                                <input type="hidden" name="parent_id" value="{{ $comment->id }}">
+                                                <textarea name="content" required placeholder="Write your reply here..."></textarea>
+                                                <button type="submit">Submit Reply</button>
+                                            </form>
+                                        </div>
+                                    @endauth
                                 </div>
-                
-                                <!-- Comment Content -->
-                                <p>{{ $comment->content }}</p>
-                
-                                <!-- Reply Link -->
-                                @auth
-                                <div class="d-flex justify-content-end mb-2">
-                                    <div class="pull-right reply">
-                                        <a href="#" class="reply-link" data-comment-id="{{ $comment->id }}"><span><i class="fa fa-reply"></i> reply</span></a>
-                                    </div>
-                                </div>
-                                @endauth
-                                <!-- Nested comments -->
-                                @include('components/comment', ['comments' => $comment->replies])
-                
-                                <!-- Reply Form -->
-                                @auth
-                                <div class="reply-form">
-                                    <form action="{{ route('comments.store', $post) }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                        <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                                        <textarea name="content" required placeholder="Write your reply here..."></textarea>
-                                        <button type="submit">Submit Reply</button>
-                                    </form>
-                                </div>
-                                @endauth
                             </div>
                         </div>
-                    </div>
-                @endforeach
-                
+                    @endforeach
+
                 </div>
                 <!-- Main Comment Form -->
                 @auth
-                <div class="comment-form">
-                    <form action="{{ route('comments.store', $post) }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="post_id" value="{{ $post->id }}">
-                        <textarea name="content" required placeholder="Write your comment here..."></textarea>
-                        <button type="submit">Submit Comment</button>
-                    </form>
-                </div>
+                    <div class="comment-form">
+                        <form action="{{ route('comments.store', $post) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                            <textarea name="content" required placeholder="Write your comment here..."></textarea>
+                            <button type="submit">Submit Comment</button>
+                        </form>
+                    </div>
                 @endauth
                 @guest
-                    <p>Please login</a> to comment.</p>
+                    <p>Please login</a> to like and comment.</p>
                 @endguest
             </div>
         </div>
@@ -383,7 +398,8 @@
         </div>
     </div>
     <!-- Edit Comment Modal -->
-    <div class="modal fade" id="editCommentModal" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editCommentModal" tabindex="-1" role="dialog"
+        aria-labelledby="editCommentModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -407,47 +423,89 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         $(document).ready(function() {
             // Show the reply form when the reply link is clicked
             $('.reply-link').click(function(e) {
                 e.preventDefault();
-                $(this).closest('.comment').find('.reply-form').first().toggle();
+                
+                // Get the closest comment container
+                // var $comment = $(this).('.comment');
+                
+                // Hide all .reply-form elements within this comment
+                $('.reply-form').hide();
+                
+                // Toggle the visibility of the specific .reply-form
+                // $(this).siblings('.reply-form').toggle();
+                $(this).closest('.comment').find('.reply-form').last().toggle();
+
             });
-    
+
             // Populate and show the edit comment modal
             $('.edit-comment-btn').click(function(e) {
                 e.preventDefault();
                 var commentId = $(this).data('comment-id');
                 var commentContent = $(this).data('comment-content');
                 var updateUrl = "/comments/" + commentId;
-    
+
                 $('#edit-comment-id').val(commentId);
                 $('#edit-comment-content').val(commentContent);
                 $('#edit-comment-form').attr('action', updateUrl);
-    
+
                 $('#editCommentModal').modal('show');
             });
         });
 
 
 
-            $('.btn-like, .btn-dislike').on('click', function() {
-                var postId = $(this).data('post-id');
-                var action = $(this).hasClass('btn-like') ? 'like' : 'dislike';
-                var url = '/posts/' + postId + '/' + action;
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-                $.post(url, {_token: '{{ csrf_token() }}'}, function(response) {
+        // Event listener for like button
+        $('.btn-like').on('click', function() {
+            const postId = $(this).data('post-id');
+            const likeCountElement = $('#like-count-' + postId);
+            const dislikeCountElement = $('#dislike-count-' + postId);
+
+            $.ajax({
+                url: `/posts/${postId}/like`,
+                type: 'POST',
+                success: function(response) {
                     if (response.success) {
-                        $('#like-count-' + postId).text(response.likes_count);
-                        $('#dislike-count-' + postId).text(response.dislikes_count);
-                    } else {
-                        alert('An error occurred. Please try again.');
+                        likeCountElement.text(response.likes_count);
+                        dislikeCountElement.text(response.dislikes_count);
                     }
-                });
+                },
+                error: function(error) {
+                    console.error('Error liking the post:', error);
+                }
             });
-    
+        });
+
+        // Event listener for dislike button
+        $('.btn-dislike').on('click', function() {
+            const postId = $(this).data('post-id');
+            const likeCountElement = $('#like-count-' + postId);
+            const dislikeCountElement = $('#dislike-count-' + postId);
+
+            $.ajax({
+                url: `/posts/${postId}/dislike`,
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        likeCountElement.text(response.likes_count);
+                        dislikeCountElement.text(response.dislikes_count);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error disliking the post:', error);
+                }
+            });
+        });
     </script>
 </body>
 

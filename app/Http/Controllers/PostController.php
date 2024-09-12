@@ -67,9 +67,10 @@ public function index()
 {
     // Fetch posts with their like count, sorted by like count in descending order
     $posts = Post::withCount('likes') // Ensure 'likes' is defined as a relationship in your Post model
-        ->orderBy('likes_count', 'desc')
-        ->get();
-
+    ->orderBy('likes_count', 'desc') // Use 'likes_count' instead of 'like-count'
+    ->take(5) // Limit the number of posts to 12
+    ->get(); 
+    dd($post);
     return view('home', compact('posts'));
 }
 
@@ -152,15 +153,16 @@ public function like(Request $request, Post $post)
 
     if ($interaction) {
         if ($interaction->liked) {
-            // If already liked, remove like
-            $interaction->delete();
+            // If already liked, toggle like off
+            $interaction->liked = false;
         } else {
-            // Remove dislike if exists
-            $interaction->disliked = false;
+            // Set liked to true and disliked to false
             $interaction->liked = true;
-            $interaction->save();
+            $interaction->disliked = false;
         }
+        $interaction->save();
     } else {
+        // Create a new interaction if none exists
         PostUserInteraction::create([
             'post_id' => $post->id,
             'user_id' => $user->id,
@@ -169,7 +171,7 @@ public function like(Request $request, Post $post)
         ]);
     }
 
-    // Update counts after changes
+    // Update like/dislike counts
     $likes_count = PostUserInteraction::where('post_id', $post->id)
         ->where('liked', true)
         ->count();
@@ -177,6 +179,7 @@ public function like(Request $request, Post $post)
         ->where('disliked', true)
         ->count();
 
+    // Update the post with the new counts
     $post->update([
         'likes_count' => $likes_count,
         'dislikes_count' => $dislikes_count,
@@ -190,6 +193,7 @@ public function like(Request $request, Post $post)
         'disliked' => $interaction ? $interaction->disliked : false,
     ]);
 }
+
 
 
 public function dislike(Request $request, Post $post)

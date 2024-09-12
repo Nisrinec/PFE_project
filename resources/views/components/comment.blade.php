@@ -64,20 +64,52 @@
 @foreach ($comments as $comment)
     <div class="comment" id="comment-{{ $comment->id }}">
         <div class="media">
-            <img class="mr-3 rounded-circle" alt="User Avatar" src="{{ $comment->user->picture ? asset('storage/public/' . $comment->user->picture) : asset('images/profile-icon.png') }}">
+            <img class="mr-3 rounded-circle" alt="User Avatar"
+                src="{{ $comment->user->picture ? asset('storage/public/' . $comment->user->picture) : asset('images/profile-icon.png') }}">
             <div class="media-body">
-                <div class="row">
+                <div class="row d-flex justify-content-between">
                     <div class="col-8 d-flex">
                         <h5>{{ $comment->user->name }}</h5>
-                        <span class="comment-date"> - {{ \Carbon\Carbon::parse($comment->created_at)->format('d/m/Y H:i') }}</span>
+                        <span class="comment-date"> -
+                            {{ \Carbon\Carbon::parse($comment->created_at)->format('d/m/Y H:i') }}</span>
                     </div>
-                    @auth
-                    <div class="col-4">
-                        <div class="pull-right reply">
-                            <a href="#" class="reply-link" data-comment-id="{{ $comment->id }}"><span><i class="fa fa-reply"></i> reply</span></a>
-                        </div>
+                    <div class="d-flex">
+
+                        @auth
+                            @if (auth()->id() === $post->user_id || auth()->id() === $comment->user_id)
+                                <div class="dropdown ">
+                                    <button class="btn btn-link dropdown-toggle" type="button"
+                                        id="commentOptions-{{ $comment->id }}" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="commentOptions-{{ $comment->id }}">
+                                        @auth
+                                            @if (auth()->id() === $comment->user_id)
+                                                <a class="dropdown-item edit-comment-btn" href="#"
+                                                    data-comment-id="{{ $comment->id }}"
+                                                    data-comment-content="{{ $comment->content }}">Edit</a>
+                                            @endif
+                                        @endauth
+                                        <form action="{{ route('comments.destroy', $comment->id) }}" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
+                        @endauth
+                        @auth
+                            <div class="d-flex justify-content-end">
+                                <div class="pull-right reply">
+                                    <a href="#" class="reply-link" data-comment-id="{{ $comment->id }}"><span><i
+                                                class="fa fa-reply"></i> reply</span></a>
+                                </div>
+                            </div>
+                        @endauth
                     </div>
-                    @endauth
                 </div>
                 <p>{{ $comment->content }}</p>
                 <!-- Nested comments -->

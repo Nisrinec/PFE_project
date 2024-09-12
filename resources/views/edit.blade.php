@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <style>
         body {
-            background: #303030;
+            background: #a8a8a8;
         }
 
         .form-control:focus {
@@ -74,7 +74,7 @@
                     <img src="{{ asset('images/mod.png') }}" alt="back_btn">
                     <div class="upload-btn"></div>
                 </label>
-                <input type="file" id="fileInput" name="profile_picture" style="display: none;" onchange="previewImage(event)">
+                {{-- <input type="file" id="fileInput" name="profile_picture" style="display: none;" onchange="previewImage(event)"> --}}
                 <span class="font-weight-bold">{{ Auth::user()->name }}</span>
                 <span class="text-black-50">{{ Auth::user()->email }}</span>
             </div>
@@ -89,6 +89,7 @@
                         <h4 class="text-right">Profile Settings</h4>
                     </div>
                     <div class="row mt-3">
+                        <input type="file" id="fileInput" name="profile_picture" style="display: none;" onchange="previewImage(event)">
                         <div class="col-md-12"><label class="labels">Full Name</label><input type="text" class="form-control" name="name" placeholder="Enter your full name" value="{{ Auth::user()->name }}"></div>
                         <div class="col-md-12"><label class="labels">Phone Number</label><input type="text" class="form-control" name="phone" placeholder="Enter your phone number" value="{{ Auth::user()->phone }}"></div>
                         <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" name="email" placeholder="Enter your email" value="{{ Auth::user()->email }}"></div>

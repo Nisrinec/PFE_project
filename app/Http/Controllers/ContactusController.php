@@ -34,7 +34,7 @@ class ContactusController extends Controller
         ];
 
         // Send an email
-        Mail::to('nisrinechkah12@gmail.com')->send(new ContactFormMail($sanitizedData));
+        Mail::to('newstvx2024@gmail.com')->send(new ContactFormMail($sanitizedData));
 
         // Redirect or return a response
         return redirect()->back()->with('success', 'Message sent successfully.');

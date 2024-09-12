@@ -12,15 +12,15 @@
         <br>
         <div class="footer-contact">
             <i class="fa fa-phone"></i>
-            <p>+1.555.555.5555</p>
+            <p>+212 676680985</p>
         </div>
         <div class="footer-contact">
             <i class="fa fa-envelope"></i>
-            <p><a href="mailto:support@company.com">support@company.com</a></p>
+            <p><a href="mailto:support@company.com">newstvx2024@gmail.com</a></p>
         </div>
         <div class="footer-contact">
             <i class="fa fa-map-marker"></i>
-            <p><span>444 S. Cedros Ave</span> Solana Beach, California</p>
+            <p><span>Street Jamal Eddine al Afghani</span> 90000, Tangier</p>
         </div>
     </div>
 
